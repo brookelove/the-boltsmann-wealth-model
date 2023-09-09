@@ -30,7 +30,8 @@ class MoneyAgent(mesa.Agent):
     def step(self):
         # The agent's step will go here.
         # For demonstration purposes we will print the agent's unique_id
-        print(f"Hi, I am an agent, you can call me {str(self.unique_id)}.")
+        print(
+            f"Hi, I am an agent, you can call me {str(self.unique_id)}. I have {str(self.wealth)} in wealth")
 
 
 class MoneyModel(mesa.Model):
@@ -39,12 +40,13 @@ class MoneyModel(mesa.Model):
     def __init__(self, N):
         self.num_agents = N
         # create scheduler and assign it to the model
-        self.schedule = mesa.time.RandomActivation(self)
+        self.schedule = mesa.time.RandomActivation(self)  # random activation
 
         # Create agents
         for i in range(self.num_agents):
             a = MoneyAgent(i, self)
             # the agent to the scheduler
+            self.schedule.add(a)
 
     def step(self):
         """Advance the model by one step"""
