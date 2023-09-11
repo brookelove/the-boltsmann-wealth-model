@@ -11,7 +11,7 @@ print("Money Model")
 # Running the model 100 times with model executing 10 steps
 for j in range(100):
     # Run the model
-    model = MoneyModel(10)
+    model = MoneyModel(10, proportion=0.5)
     for i in range(10):
         model.step()
 

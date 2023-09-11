@@ -20,19 +20,22 @@ import pandas as pd
 class MoneyAgent(mesa.Agent):
     '''An agent with fixed wealth initally.'''
 
-    def __init__(self, unique_id, model):
+    def __init__(self, unique_id, model, proportion):
         # parameters to the parent class
         super().__init__(unique_id, model)
 
         # create the agent variable and set inital value
         self.wealth = 1
+        # create the proportion variable and set inital value
+        self.proportion = proportion
 
     def step(self):
         if self.wealth > 0:
             other_agent = self.random.choice(self.model.schedule.agents)
             if other_agent is not None:
-                other_agent.wealth += 1
-                self.wealth -= 1
+                wealth_distribution = self.proportion * self.wealth
+                other_agent.wealth += wealth_distribution
+                self.wealth -= wealth_distribution
         # The agent's step will go here.
         # For demonstration purposes we will print the agent's unique_id
         print(
@@ -42,16 +45,20 @@ class MoneyAgent(mesa.Agent):
 class MoneyModel(mesa.Model):
     '''A model with some number of agents'''
 
-    def __init__(self, N):
+    def __init__(self, N, proportion=0.1):
         self.num_agents = N
         # create scheduler and assign it to the model
         self.schedule = mesa.time.RandomActivation(self)  # random activation
+        self.proportion = proportion
 
         # Create agents
         for i in range(self.num_agents):
-            a = MoneyAgent(i, self)
+            a = MoneyAgent(i, self, proportion)
             # the agent to the scheduler
             self.schedule.add(a)
+
+    # def change_proportion(self, new_proportion):
+    #     self.proportion = new_proportion
 
     def step(self):
         """Advance the model by one step"""
